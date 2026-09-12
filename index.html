@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEZIS - AIM CENTER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glow-color: #991b1b;
+            --deep-bg: #030303;        
+            --card-bg: rgba(8, 8, 8, 0.85); 
+            --accent: #991b1b;          
+            --accent2: #7f1d1d;         
+            --border-glow: rgba(153, 27, 27, 0.9);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            position: relative;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(153, 27, 27, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 60%, rgba(127, 29, 29, 0.05) 0%, transparent 60%);
+            animation: bgPulse 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.6;
+        }
+
+        .premium-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(153, 27, 27, 0.8);
+            border-radius: 28px;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(153, 27, 27, 0.35), 0 10px 30px rgba(0, 0, 0, 0.9);
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(153, 27, 27, 0.7);
+            box-shadow: 0 0 12px rgba(153, 27, 27, 0.2), inset 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        .glass-input:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5), inset 0 0 8px rgba(153, 27, 27, 0.3);
+            background: #050000;
+            transform: scale(1.01);
+        }
+
+        .btn-gradient-premium {
+            background: rgba(127, 29, 29, 0.2);
+            border: 2px solid rgba(153, 27, 27, 0.8);
+            box-shadow: 0 0 20px rgba(153, 27, 27, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gradient-premium:hover {
+            background: rgba(153, 27, 27, 0.4);
+            border-color: #ef4444;
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-gradient-premium:active { transform: scale(0.97); }
+
+        .btn-cert {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(153, 27, 27, 0.7);
+            box-shadow: 0 0 15px rgba(153, 27, 27, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .switch { position: relative; display: inline-block; width: 56px; height: 30px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(153, 27, 27, 0.8);
+            transition: 0.3s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 20px; width: 20px;
+            left: 3px; bottom: 3px;
+            background: #991b1b;
+            transition: 0.3s; border-radius: 50%;
+            box-shadow: 0 0 10px #991b1b;
+        }
+        input:checked + .slider {
+            background: #991b1b;
+            border-color: #ef4444;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.8);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background: #fff;
+            box-shadow: 0 0 15px #fff;
+        }
+
+        .ip-badge {
+            background: rgba(10, 10, 10, 0.9);
+            border: 2px solid rgba(153, 27, 27, 0.9);
+            color: #fff;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-family: monospace;
+            box-shadow: 0 0 20px rgba(153, 27, 27, 0.4);
+        }
+
+        .accent-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #991b1b, #ef4444, #991b1b, transparent);
+            width: 70%;
+            margin: 10px auto;
+            box-shadow: 0 0 15px #991b1b;
+        }
+
+        .key-box {
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid rgba(153, 27, 27, 0.8);
+            box-shadow: inset 0 0 20px rgba(153, 27, 27, 0.5);
+        }
+
+        #toastContent {
+            box-shadow: 0 0 40px rgba(153, 27, 27, 0.8);
+            border: 2px solid rgba(239, 68, 68, 0.9);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        .mod-item-active {
+            border-color: #ef4444 !important;
+            background: rgba(153, 27, 27, 0.25) !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+        }
+
+        .aim-selected {
+            border-color: rgba(239, 68, 68, 0.9) !important;
+            background: rgba(153, 27, 27, 0.2) !important;
+            box-shadow: 0 0 25px rgba(153, 27, 27, 0.5);
+        }
+
+        #modList > div {
+            transition: all 0.3s ease;
+            position: relative; z-index: 1;
+            border: 2px solid rgba(153, 27, 27, 0.4);
+        }
+
+        .server-box { animation: fadeInUp 0.4s ease; }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 relative min-h-screen">
+    <div class="bg-layer"></div>
+    <div class="bg-grid"></div>
+
+    <!-- MAIN VIEW -->
+    <div id="mainView" class="w-full max-w-[440px] space-y-6 my-6 relative z-10">
+
+        <!-- AVATAR -->
+        <div class="flex flex-col items-center justify-center relative z-20 mb-2 mt-2">
+            <img id="avatarImage" src="" alt="Avatar" 
+                 onerror="if(this.src.includes('solitude.jpg')){this.src='solitude.png';}else{this.style.display='none';}" 
+                 class="w-32 h-32 object-cover rounded-full border-4 border-red-600 shadow-[0_0_30px_rgba(153,27,27,0.7)] bg-black/50">
+            <span class="text-[12px] font-extrabold uppercase tracking-[0.25em] text-red-500 mt-2.5 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]">VIP PROXY</span>
+        </div>
+
+        <!-- TITLE & ONLINE STATS -->
+        <div class="flex items-center justify-between px-2 w-full z-10 relative mt-2">
+            <div>
+                <h1 class="text-white text-[28px] font-black tracking-tight uppercase leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Headlock Nezis</h1>
+                <p class="text-[12px] font-bold uppercase tracking-[0.3em] text-red-500 mt-1">BY Nezis</p>
+            </div>
+            <div class="flex flex-col items-end gap-1 px-4 py-2 rounded-3xl bg-[#111] border-2 border-red-900/60 shadow-[0_0_25px_rgba(153,27,27,0.3)]">
+                <div class="flex items-center gap-2 text-xs font-bold text-white/90">
+                    <span class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span> ONLINE
+                </div>
+                <div class="text-[10px] text-gray-400 flex gap-3">
+                    <span>PING <span class="text-white font-mono font-bold" id="realtime-ping">-- ms</span></span>
+                    <span>FPS <span class="text-white font-mono font-bold">120</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="premium-card p-6 space-y-6 mt-4">
+            <form id="mainForm" onsubmit="event.preventDefault(); return false;" class="space-y-6">
+                <div class="space-y-6 animate-in">
+                    
+                    <!-- Khung Nhập Key -->
+                    <div class="space-y-2.5">
+                        <label class="text-[11px] font-bold text-white/90 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <i class="fa-solid fa-key text-red-500 text-[10px]"></i> LICENSE KEY
+                        </label>
+                        <input type="text" name="key_code" id="keyInput" placeholder="Nhập Key tại đây..." autocomplete="off"
+                        class="glass-input w-full rounded-2xl py-4 px-4 outline-none font-mono text-sm text-white placeholder-white/30">
+                    </div>
+
+                    <!-- Danh Sách Aim -->
+                    <div id="aimSelector" class="space-y-3 hidden">
+                        <label class="text-[11px] font-bold text-white/90 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <i class="fa-solid fa-crosshairs text-red-500 text-[10px]"></i> CHỌN AIM
+                        </label>
+                        <div id="modList" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Status Box -->
+                    <div id="statusBox" class="hidden space-y-3 bg-[#0a0202] border-2 border-red-700 p-4 rounded-2xl shadow-[0_0_30px_rgba(153,27,27,0.4)]">
+                        <div class="flex items-center justify-between">
+                            <span class="ip-badge" id="clientIpDisplay">127.0.0.1</span>
+                            <div id="countdownBox" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#000] border-2 border-red-800">
+                                <i class="fa-solid fa-clock text-[10px] text-red-500"></i>
+                                <span id="countdownTimer" class="text-[11px] font-mono font-bold text-red-400">10h 00m 00s</span>
+                            </div>
+                        </div>
+
+                        <div class="accent-line"></div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-red-950 border-2 border-red-600 flex items-center justify-center shadow-[0_0_20px_rgba(153,27,27,0.6)]">
+                                    <i class="fa-solid fa-bullseye text-red-500 text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase">AIM ACTIVE</p>
+                                    <p class="text-[13px] font-bold text-white" id="statusModName">-</p>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleSwitch" onchange="toggleMod()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- SERVER INFO -->
+                        <div id="serverBox" class="server-box hidden p-3 rounded-xl bg-[#000] border-2 border-red-900/60 mt-2">
+                            <p class="text-[10px] font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-server text-red-500"></i> SERVER INFO
+                            </p>
+                            <div class="flex justify-between text-[11px]">
+                                <span class="text-gray-400">Host:</span>
+                                <span class="text-white font-mono font-bold" id="serverHost">server.zenithsolitude.store</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] mt-1">
+                                <span class="text-gray-400">Port:</span>
+                                <span class="text-white font-mono font-bold" id="serverPort">5560</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nút Kích Hoạt -->
+                    <button type="button" id="btn-submit-main" onclick="handleInitialStep()" class="w-full py-4.5 rounded-2xl btn-gradient-premium text-white font-bold text-[14px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 h-14">
+                        <span id="btnText">KÍCH HOẠT KEY</span> <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                    </button>
+
+                    <!-- Nút Get Key & Cert -->
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <button type="button" onclick="handleGetKeyClick(event)" class="w-full py-3.5 rounded-2xl btn-gradient-premium text-white font-bold text-[11px] uppercase tracking-[0.1em] flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4 fill-current text-red-500 shrink-0" viewBox="0 0 24 24">
+                                <path d="M7 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6.586-2l-1.414 1.414 2 2-2 2 1.414 1.414 2-2 2 2 1.414-1.414-2-2 4.586-4.586V7.414L13.586 10z"/>
+                            </svg>
+                            <span>GET KEY</span>
+                        </button>
+                        <a href="https://solitudepremium.click/kzmod/solitude.mobileconfig" target="_blank" class="w-full py-3.5 rounded-2xl btn-cert text-white font-bold text-[11px] uppercase tracking-[0.1em] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-xs"></i> TẢI CERT
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center pb-4 pt-2">
+            <p class="text-[11px] text-gray-500 font-medium tracking-wider">BY NEZIS MODZ</p>
+        </div>
+    </div>
+
+    <!-- GET KEY VIEW -->
+    <div id="getKeyView" onclick="redirectWithKey()" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/95 backdrop-blur-xl cursor-pointer">
+        <div class="premium-card p-6 w-full max-w-[380px] text-center space-y-6 border-2 border-red-600 shadow-[0_0_50px_rgba(239,68,68,0.4)]">
+            
+            <div>
+                <h2 class="text-xl font-black text-white uppercase tracking-wider">MÃ KEY VIP 10 GIỜ</h2>
+                <p class="text-xs text-gray-400 mt-1.5">Key mới đã được khởi tạo thành công</p>
+            </div>
+            
+            <div class="key-box p-4 rounded-2xl flex items-center justify-center">
+                <span id="generatedKey" class="font-mono font-extrabold text-red-500 text-lg tracking-widest text-center select-all">SOLITUDE-10H-8899</span>
+            </div>
+
+            <button type="button" class="w-full py-4 rounded-2xl btn-gradient-premium text-white font-extrabold text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(239,68,68,0.5)]">
+                <i class="fa-solid fa-copy text-sm text-red-500"></i> SAO CHÉP KEY
+            </button>
+
+            <p class="text-[10px] text-gray-400 font-medium">
+                👉 Chạm bất kỳ đâu để sao chép key và tiếp tục!
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" style="position:fixed;top:24px;left:50%;transform:translate(-50%,-20px);opacity:0;visibility:hidden;z-index:110;width:90%;max-width:400px;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);">
+        <div id="toastContent" class="p-4 rounded-2xl text-white text-sm font-bold text-center"></div>
+    </div>
+
+    <script>
+        const AVATAR_URL = 'solitude.jpg'; 
+        const GET_KEY_LINK = 'https://layma.net/hhJDKFH4%C6%AFivuwotj';
+        const TARGET_LINK = 'https://layma.net/hhJDKFH4%C6%AFivuwotj'; 
+        const MIN_WAIT_TIME_SECONDS = 15; 
+
+        let clientIP = '127.0.0.1';
+        let currentActiveMod = null, currentActiveFile = null;
+        let currentServer = 'server.zenithsolitude.store', currentPort = 5560;
+        let currentKey = null, isKeyChecked = false, expiresAt = 0;
+        let selectedAimFile = null, selectedAimName = null;
+        let modList = [];
+        let timerInterval = null;
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const content = document.getElementById('toastContent');
+            if (!toast || !content) return;
+            content.innerText = msg;
+            toast.style.visibility = 'visible';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -20px)';
+                setTimeout(() => { toast.style.visibility = 'hidden'; }, 400);
+            }, 3500);
+        }
+
+        async function measurePing() {
+            const pingEl = document.getElementById('realtime-ping');
+            if (!pingEl) return;
+            const start = performance.now();
+            try {
+                await fetch('https://api4.ipify.org?format=json', { method: 'HEAD', cache: 'no-cache' });
+                const duration = Math.round(performance.now() - start);
+                pingEl.innerText = duration + 'ms';
+            } catch(e) {
+                pingEl.innerText = '28ms';
+            }
+        }
+
+        async function fetchRealIP() {
+            try {
+                const resp = await fetch('https://api4.ipify.org?format=json');
+                const data = await resp.json();
+                clientIP = data.ip;
+            } catch(e) {
+                clientIP = '127.0.0.1';
+            }
+            const ipDisplay = document.getElementById('clientIpDisplay');
+            if (ipDisplay) ipDisplay.innerText = clientIP;
+        }
+
+        function generateUniqueKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let randomPart = '';
+            for (let i = 0; i < 6; i++) {
+                randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const createdKey = `SOLITUDE-10H-${randomPart}`;
+            
+            try {
+                const db = JSON.parse(localStorage.getItem('ZENITH_VALID_KEYS') || '{}');
+                db[createdKey] = Date.now() + (10 * 60 * 60 * 1000);
+                localStorage.setItem('ZENITH_VALID_KEYS', JSON.stringify(db));
+            } catch(e) {}
+
+            return createdKey;
+        }
+
+        function handleGetKeyClick(e) {
+            if(e) e.preventDefault();
+            sessionStorage.setItem('ZENITH_START_TIME', Date.now().toString());
+            
+            const newWin = window.open(GET_KEY_LINK, '_blank');
+            if (!newWin || newWin.closed || typeof newWin.closed=='undefined') {
+                window.location.href = GET_KEY_LINK;
+            }
+        }
+
+        function triggerGetKeyScreen() {
+            const newKey = generateUniqueKey();
+            document.getElementById('generatedKey').innerText = newKey;
+
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('getKeyView').classList.remove('hidden');
+        }
+
+        function redirectWithKey() {
+            const keyText = document.getElementById('generatedKey').innerText;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(keyText);
+            }
+
+            document.getElementById('keyInput').value = keyText;
+            showToast("📋 Đã copy Key: " + keyText);
+
+            setTimeout(() => {
+                if (TARGET_LINK) {
+                    window.location.href = TARGET_LINK;
+                } else {
+                    document.getElementById('getKeyView').classList.add('hidden');
+                    document.getElementById('mainView').classList.remove('hidden');
+                }
+            }, 500);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const startTimeStr = sessionStorage.getItem('ZENITH_START_TIME');
+                if (startTimeStr) {
+                    const startTime = parseInt(startTimeStr, 10);
+                    const timeElapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+
+                    if (timeElapsedSeconds >= MIN_WAIT_TIME_SECONDS) {
+                        sessionStorage.removeItem('ZENITH_START_TIME');
+                        triggerGetKeyScreen();
+                    } else {
+                        sessionStorage.removeItem('ZENITH_START_TIME');
+                        showToast(`⚠️ Bạn chưa hoàn tất vượt link! Vui lòng làm lại.`);
+                    }
+                }
+            }
+        });
+
+        function getDefaultModList() {
+            return [
+                { file: 'aim_dragon2.txt', name: 'Aim Drag On 2.0', icon: 'fa-bolt', desc: 'Kéo aim siêu mượt', server: 'server.zenithsolitude.store', port: 5560 },
+                { file: 'aim_chest.txt', name: 'Aim Chest', icon: 'fa-crosshairs', desc: 'Tự động aim vào ngực', server: 'server.zenithsolitude.store', port: 5560 },
+                { file: 'aim_neck_dragon2.txt', name: 'Aim Neck Drag 2.0', icon: 'fa-circle-dot', desc: 'Aim vào cổ', server: 'server.zenithsolitude.store', port: 5560 },
+                { file: 'aim_magic_bullet.txt', name: 'Magic Bullet', icon: 'fa-magic', desc: 'Đạn ma thuật', server: 'server.zenithsolitude.store', port: 5560 }
+            ];
+        }
+
+        function loadModList() {
+            modList = getDefaultModList();
+            renderModList();
+        }
+
+        function renderModList() {
+            const container = document.getElementById('modList');
+            if (!container) return;
+            container.innerHTML = modList.map(mod => {
+                const isActive = (currentActiveFile === mod.file);
+                const isSelected = (!isActive && selectedAimFile === mod.file);
+                let extraClass = '';
+                if (isActive) extraClass = 'mod-item-active';
+                else if (isSelected) extraClass = 'aim-selected';
+                return `<div class="flex items-center justify-between p-3 rounded-xl bg-black/60 border-2 cursor-pointer transition-all relative ${extraClass} ${!isActive && !isSelected ? 'border-red-900/50 text-gray-300' : ''}" onclick="selectAim('${mod.file}', '${mod.name}')">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid ${mod.icon} ${isActive || isSelected ? 'text-red-500' : 'text-gray-400'} text-sm"></i>
+                        <div><span class="text-[12px] font-bold text-white">${mod.name}</span><p class="text-[9px] text-gray-400">${mod.desc}</p></div>
+                    </div>
+                    <i class="fa-solid ${isActive ? 'fa-check-circle text-red-500' : (isSelected ? 'fa-dot-circle text-red-400' : 'fa-chevron-right text-gray-500')} text-xs"></i>
+                </div>`;
+            }).join('');
+        }
+
+        function startCountdown(expireTime) {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            function updateTimer() {
+                const now = Date.now();
+                const diff = expireTime - now;
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('countdownTimer').innerText = "HẾT HẠN";
+                    showToast("🔴 Key 10 Giờ của bạn đã hết hạn!");
+                    toggleMod();
+                    localStorage.removeItem('ZENITH_AIM_state');
+                    isKeyChecked = false;
+                    return;
+                }
+
+                const hrs = Math.floor(diff / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                const formatted = `${hrs < 10 ? '0'+hrs : hrs}h ${mins < 10 ? '0'+mins : mins}m ${secs < 10 ? '0'+secs : secs}s`;
+                document.getElementById('countdownTimer').innerText = formatted;
+            }
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function saveState(key, mod, file, exp, server, port) {
+            const state = { 
+                key: key, 
+                modName: mod, 
+                fileName: file, 
+                expiresAt: exp, 
+                server: server || currentServer, 
+                port: port || currentPort, 
+                timestamp: Date.now() 
+            };
+            try { localStorage.setItem('ZENITH_AIM_state', JSON.stringify(state)); } catch(e) {}
+        }
+
+        function loadState() { 
+            try { return JSON.parse(localStorage.getItem('ZENITH_AIM_state')); } catch(e) { return null; } 
+        }
+
+        function renderServerInfo(server, port) {
+            document.getElementById('serverHost').innerText = server;
+            document.getElementById('serverPort').innerText = port;
+        }
+
+        function updateStatusUI(modName, fileName, server = null, port = null) {
+            const statusBox = document.getElementById('statusBox'), 
+                  serverBox = document.getElementById('serverBox'),
+                  modEl = document.getElementById('statusModName'), 
+                  toggle = document.getElementById('toggleSwitch');
+            
+            if (modName && fileName) {
+                statusBox.classList.remove('hidden'); 
+                serverBox.classList.remove('hidden');
+                modEl.innerText = modName; 
+                toggle.checked = true;
+                currentActiveMod = modName; 
+                currentActiveFile = fileName;
+                if (server) currentServer = server;
+                if (port) currentPort = port;
+                
+                renderServerInfo(currentServer, currentPort);
+                document.getElementById('btnText').innerHTML = 'TẮT AIM';
+                selectedAimFile = null; selectedAimName = null;
+                document.getElementById('aimSelector').classList.add('hidden');
+
+                if (expiresAt > 0) startCountdown(expiresAt);
+            } else {
+                statusBox.classList.add('hidden'); 
+                serverBox.classList.add('hidden');
+                modEl.innerText = '-'; 
+                toggle.checked = false;
+                currentActiveMod = null; currentActiveFile = null;
+                document.getElementById('btnText').innerHTML = 'KÍCH HOẠT AIM';
+                if (timerInterval) clearInterval(timerInterval);
+            }
+            renderModList();
+        }
+
+        function selectAim(file, name) {
+            selectedAimFile = file;
+            selectedAimName = name;
+            renderModList();
+            document.getElementById('btnText').innerHTML = 'KÍCH HOẠT ' + name.toUpperCase();
+        }
+
+        function toggleMod() {
+            if (currentActiveMod) {
+                updateStatusUI(null, null);
+                localStorage.removeItem('ZENITH_AIM_state');
+                showToast("🔴 Đã tắt Aim!");
+                if (isKeyChecked) {
+                    document.getElementById('aimSelector').classList.remove('hidden');
+                    document.getElementById('btnText').innerHTML = 'CHỌN AIM RỒI KÍCH HOẠT';
+                }
+            }
+        }
+
+        function handleInitialStep() {
+            const keyVal = document.getElementById('keyInput').value.trim();
+
+            if (currentActiveMod) {
+                toggleMod();
+                return;
+            }
+
+            if (!isKeyChecked) {
+                if (!keyVal) {
+                    showToast("⚠️ Vui lòng nhập Key 10 giờ!");
+                    return;
+                }
+
+                let isValidKey = false;
+                try {
+                    const validKeys = JSON.parse(localStorage.getItem('ZENITH_VALID_KEYS') || '{}');
+                    
+                    // Kiểm tra xem key có tồn tại trong storage hay không
+                    if (validKeys[keyVal]) {
+                        if (validKeys[keyVal] > Date.now()) {
+                            expiresAt = validKeys[keyVal];
+                            isValidKey = true;
+                        } else {
+                            showToast("🔴 Key nhập vào đã hết hạn sử dụng!");
+                            return;
+                        }
+                    }
+                } catch(e) {}
+
+                // CHỈ CHO PHÉP QUA NẾU KEY TỒN TẠI VÀ HỢP LỆ
+                if (!isValidKey) {
+                    showToast("❌ Key không hợp lệ hoặc không tồn tại!");
+                    return;
+                }
+
+                currentKey = keyVal;
+                isKeyChecked = true;
+                document.getElementById('aimSelector').classList.remove('hidden');
+                document.getElementById('btnText').innerHTML = 'CHỌN AIM RỒI KÍCH HOẠT';
+                showToast("🟢 Key hợp lệ! Thời gian sử dụng: 10 GIỜ.");
+                return;
+            }
+
+            if (selectedAimFile) {
+                updateStatusUI(selectedAimName, selectedAimFile, currentServer, currentPort);
+                saveState(currentKey, selectedAimName, selectedAimFile, expiresAt, currentServer, currentPort);
+                showToast("🟢 Kích hoạt " + selectedAimName + " (10H) thành công!");
+            } else {
+                showToast("⚠️ Vui lòng bấm chọn 1 loại Aim bên dưới!");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('avatarImage').src = AVATAR_URL;
+            fetchRealIP();
+            loadModList();
+            
+            measurePing();
+            setInterval(measurePing, 4000);
+
+            const savedState = loadState();
+            if (savedState && savedState.key) {
+                if (savedState.expiresAt && savedState.expiresAt <= Date.now()) {
+                    localStorage.removeItem('ZENITH_AIM_state');
+                    showToast("🔴 Key đã lưu đã hết hạn!");
+                    return;
+                }
+
+                currentKey = savedState.key;
+                expiresAt = savedState.expiresAt;
+                document.getElementById('keyInput').value = currentKey;
+                isKeyChecked = true;
+
+                if (savedState.modName && savedState.fileName) {
+                    updateStatusUI(savedState.modName, savedState.fileName, savedState.server, savedState.port);
+                } else {
+                    document.getElementById('aimSelector').classList.remove('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
