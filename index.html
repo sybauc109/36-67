@@ -247,7 +247,7 @@
                             <span class="ip-badge" id="clientIpDisplay">127.0.0.1</span>
                             <div id="countdownBox" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#000] border-2 border-red-800">
                                 <i class="fa-solid fa-clock text-[10px] text-red-500"></i>
-                                <span id="countdownTimer" class="text-[11px] font-mono font-bold text-red-400">10h 00m 00s</span>
+                                <span id="countdownTimer" class="text-[11px] font-mono font-bold text-red-400">VĨNH VIỄN</span>
                             </div>
                         </div>
 
@@ -315,12 +315,12 @@
         <div class="premium-card p-6 w-full max-w-[380px] text-center space-y-6 border-2 border-red-600 shadow-[0_0_50px_rgba(239,68,68,0.4)]">
             
             <div>
-                <h2 class="text-xl font-black text-white uppercase tracking-wider">MÃ KEY VIP 10 GIỜ</h2>
-                <p class="text-xs text-gray-400 mt-1.5">Key mới đã được khởi tạo thành công</p>
+                <h2 class="text-xl font-black text-white uppercase tracking-wider">MÃ KEY VIP</h2>
+                <p class="text-xs text-gray-400 mt-1.5">Key cố định của bạn là: abc</p>
             </div>
             
             <div class="key-box p-4 rounded-2xl flex items-center justify-center">
-                <span id="generatedKey" class="font-mono font-extrabold text-red-500 text-lg tracking-widest text-center select-all">SOLITUDE-10H-8899</span>
+                <span id="generatedKey" class="font-mono font-extrabold text-red-500 text-lg tracking-widest text-center select-all">abc</span>
             </div>
 
             <button type="button" class="w-full py-4 rounded-2xl btn-gradient-premium text-white font-extrabold text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(239,68,68,0.5)]">
@@ -393,16 +393,12 @@
         }
 
         function generateUniqueKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let randomPart = '';
-            for (let i = 0; i < 6; i++) {
-                randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            const createdKey = `SOLITUDE-10H-${randomPart}`;
+            // Cố định key là "abc" theo yêu cầu
+            const createdKey = "abc";
             
             try {
                 const db = JSON.parse(localStorage.getItem('ZENITH_VALID_KEYS') || '{}');
-                db[createdKey] = Date.now() + (10 * 60 * 60 * 1000);
+                db[createdKey] = Date.now() + (365 * 24 * 60 * 60 * 1000); // Vĩnh viễn (1 năm)
                 localStorage.setItem('ZENITH_VALID_KEYS', JSON.stringify(db));
             } catch(e) {}
 
@@ -502,29 +498,11 @@
             if (timerInterval) clearInterval(timerInterval);
             
             function updateTimer() {
-                const now = Date.now();
-                const diff = expireTime - now;
-
-                if (diff <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('countdownTimer').innerText = "HẾT HẠN";
-                    showToast("🔴 Key 10 Giờ của bạn đã hết hạn!");
-                    toggleMod();
-                    localStorage.removeItem('ZENITH_AIM_state');
-                    isKeyChecked = false;
-                    return;
-                }
-
-                const hrs = Math.floor(diff / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-                const formatted = `${hrs < 10 ? '0'+hrs : hrs}h ${mins < 10 ? '0'+mins : mins}m ${secs < 10 ? '0'+secs : secs}s`;
-                document.getElementById('countdownTimer').innerText = formatted;
+                // Nếu là key vĩnh viễn (abc), có thể bỏ qua đếm ngược hoặc giữ nguyên hiển thị vĩnh viễn
+                document.getElementById('countdownTimer').innerText = "VĨNH VIỄN";
             }
 
             updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
         }
 
         function saveState(key, mod, file, exp, server, port) {
@@ -570,7 +548,7 @@
                 selectedAimFile = null; selectedAimName = null;
                 document.getElementById('aimSelector').classList.add('hidden');
 
-                if (expiresAt > 0) startCountdown(expiresAt);
+                startCountdown(expiresAt);
             } else {
                 statusBox.classList.add('hidden'); 
                 serverBox.classList.add('hidden');
@@ -612,7 +590,7 @@
 
             if (!isKeyChecked) {
                 if (!keyVal) {
-                    showToast("⚠️ Vui lòng nhập Key 10 giờ!");
+                    showToast("⚠️ Vui lòng nhập Key!");
                     return;
                 }
 
@@ -622,13 +600,8 @@
                     
                     // Kiểm tra xem key có tồn tại trong storage hay không
                     if (validKeys[keyVal]) {
-                        if (validKeys[keyVal] > Date.now()) {
-                            expiresAt = validKeys[keyVal];
-                            isValidKey = true;
-                        } else {
-                            showToast("🔴 Key nhập vào đã hết hạn sử dụng!");
-                            return;
-                        }
+                        expiresAt = validKeys[keyVal];
+                        isValidKey = true;
                     }
                 } catch(e) {}
 
@@ -642,14 +615,14 @@
                 isKeyChecked = true;
                 document.getElementById('aimSelector').classList.remove('hidden');
                 document.getElementById('btnText').innerHTML = 'CHỌN AIM RỒI KÍCH HOẠT';
-                showToast("🟢 Key hợp lệ! Thời gian sử dụng: 10 GIỜ.");
+                showToast("🟢 Key hợp lệ! Sử dụng thành công.");
                 return;
             }
 
             if (selectedAimFile) {
                 updateStatusUI(selectedAimName, selectedAimFile, currentServer, currentPort);
                 saveState(currentKey, selectedAimName, selectedAimFile, expiresAt, currentServer, currentPort);
-                showToast("🟢 Kích hoạt " + selectedAimName + " (10H) thành công!");
+                showToast("🟢 Kích hoạt " + selectedAimName + " thành công!");
             } else {
                 showToast("⚠️ Vui lòng bấm chọn 1 loại Aim bên dưới!");
             }
@@ -660,17 +633,18 @@
             fetchRealIP();
             loadModList();
             
+            // Tự động gán sẵn key "abc" vào kho lưu trữ hợp lệ ngay khi mở trang
+            try {
+                const db = JSON.parse(localStorage.getItem('ZENITH_VALID_KEYS') || '{}');
+                db['abc'] = Date.now() + (365 * 24 * 60 * 60 * 1000); // 1 năm vĩnh viễn
+                localStorage.setItem('ZENITH_VALID_KEYS', JSON.stringify(db));
+            } catch(e) {}
+
             measurePing();
             setInterval(measurePing, 4000);
 
             const savedState = loadState();
             if (savedState && savedState.key) {
-                if (savedState.expiresAt && savedState.expiresAt <= Date.now()) {
-                    localStorage.removeItem('ZENITH_AIM_state');
-                    showToast("🔴 Key đã lưu đã hết hạn!");
-                    return;
-                }
-
                 currentKey = savedState.key;
                 expiresAt = savedState.expiresAt;
                 document.getElementById('keyInput').value = currentKey;
